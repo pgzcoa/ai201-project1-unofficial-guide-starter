@@ -9,9 +9,8 @@
 
 ## Domain
 
-<!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? -->
+<!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? --> My domain focuses on identifying the best pizza in Southern California using reviews and descriptions from Yelp, Google Maps, Reddit threads, and local food guides.  This information is scattered across many platforms, making it difficult for students to compare quality, price, and style in one place. My system will make this knowledge searchable so people can quickly find the best pizza options on their preferences of pizza.
 
----
 
 ## Documents
 
@@ -20,16 +19,16 @@
 
 | # | Source | Description | URL or location |
 |---|--------|-------------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| 1 |Eater LA |Best pizza in OC |https://la.eater.com/maps/best-pizza-orange-county |
+| 2 |LA Times |Pizza Coverage |https://latimes.com/food |
+| 3 |Reddit |local inland empire favorite pizza spots |https://www.reddit.com/r/InlandEmpire/search?q=pizza&restrict_sr=1 |
+| 4 |Yelp |Mountain Mike's Pizza |https://yelp.com/biz/mountain-mikes-pizza-ontario |
+| 5 |Yelp |Terra Mia Pizzeria |https://www.yelp.com/biz/terra-mia-pizzeria-laguna-hills |
+| 6 |Yelp |Bella Forno Pizzeria |https://www.yelp.com/biz/bella-forno-pizzeria-redlands |
+| 7 |Google Maps |Best pizza in Southern California | https://www.google.com/maps/search/best+pizza+in+southern+california|
+| 8 |Google Maps |best pizza in Northridge |https://www.google.com/maps/search/best+pizza+in+northridge+ca |
+| 9 |Google Maps |best pizza in Long Beach |https://www.google.com/maps/search/best+pizza+in+long+beach+ca |
+| 10 |Google Maps |best pizza in San Diego |https://www.google.com/maps/search/best+pizza+in+san+diego+ca |
 
 ---
 
@@ -73,11 +72,11 @@
 
 | # | Question | Expected answer |
 |---|----------|-----------------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 |What are the highest rated pizza places in Southern California? | Bella Forno Pizzeria(Redlands) and Bronx Pizza (San Diego) and (Mulberry Street Pizza(Beverly Hills) and Terra Mia Pizzeria (Laguna Hills)|
+| 2 |Which pizza spots offer the best value for the price? | Big Slice Pizza(Long Beach) and Pisa Pizza (San Bernardino)|
+| 3 |Which pizza places are most recommended by locals and students? |Terra Mia (Laguna Hills) and top Northridge/Long Beach Google Maps picks |
+| 4 |What pizza restaurants have consistent reviews across multiple counties and across multiple platforms? |Terra Mia, Bella Forno, and Mountain Mike's |
+| 5 |Which pizza places in Southern California have the fastest and most reliable delivery?  |Mountain Mike's (Ontario) & Bronx Pizza(San Diego) |
 
 ---
 
