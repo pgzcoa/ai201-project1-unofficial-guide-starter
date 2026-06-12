@@ -9,7 +9,7 @@
 
 ## Domain
 
-<!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? --> My domain focuses on identifying the best pizza in Southern California using reviews and descriptions from Yelp, Google Maps, Reddit threads, and local food guides.  This information is scattered across many platforms, making it difficult for students to compare quality, price, and style in one place. My system will make this knowledge searchable so people can quickly find the best pizza options on their preferences of pizza.
+<!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? --> My domain focuses on identifying the best pizza in Southern California using reviews and descriptions from Yelp, Google Maps, Reddit threads, and local food guides.  This information is scattered across many platforms, making it difficult for people to compare quality, price, and style in one place. My system will make this knowledge searchable so people can quickly find the best pizza options on their preferences of pizza.  This is valuable because pizza quality varies by city, locals know hidden gems, and official sources don't compile this information. Pizza is a very popular and comfort food. 
 
 
 ## Documents
@@ -39,12 +39,12 @@
      numbers fit the structure of your documents.
      A review-heavy corpus warrants different chunking than a long FAQ. -->
 
-**Chunk size:**
+**Chunk size:** 50 tokens
 
-**Overlap:**
+**Overlap:** 10 - 15 tokens
 
 **Reasoning:**
-
+My documents are mostly short reviews from Google Maps, Yelp, Reddit, LA Times, and Eater LA. These reviews are usually short,and small chunk size keeps each opinion self contained instead of mixing multiple restaurants together.  A 50 token chunk is enough to capture a full review while staying focused.  I am adding 10 - 15 tokens of overlap so that if a review is slightly longer than one chunk, important details(like the restaurant name or the main opinion)are not cut off between the chunks.  If the chunks are too small the retrieval would return incomplete reviews.  If the chunks were too large then unrelated reviews would get merged and the accuracy would be reduced.  This chunk size and overlap would give a clean precise retrieval for short reviews.
 ---
 
 ## Retrieval Approach
@@ -56,11 +56,13 @@
      support, accuracy on domain-specific text, latency? -->
 
 **Embedding model:**
-
+all-Mini-L6-v2
+It does not weight a lot,fast, and performs well on short reviews. Since my documents are small reviews I do not need a large or expensive embedding model.
 **Top-k:**
-
+3 - 5 chunks per query
+If I retrieve too few chunks then I could miss important reviews.  If I retrieve too many then I could get reviews from restaurants that are not related to the best pizza places in Southern California.
 **Production tradeoff reflection:**
-
+If this were a real production system with no cost constraints, I would consider larger and more powerful embedding models like all-mpnet-base-v2 or Open AI text embedding models.  Bigger models can caputure more details in long reviews, handle multilingual text, and improve accuracy for domain-specific language. The tradeoff is higher compute cost, slower retrieval, and increased latency. For this project all-MiniLM-L6-v2 provides the right balance of speed, cost, and accuracy for short review style documents.
 ---
 
 ## Evaluation Plan
@@ -86,9 +88,9 @@
      Consider: noisy or inconsistent documents, missing source attribution, off-topic
      retrieval, chunks that split key information across boundaries. -->
 
-1.
+1. Important details might get split across chunks
 
-2.
+2.Retrieval may bring restaurants that do not fit the query and give irrelevant results
 
 ---
 
@@ -101,18 +103,42 @@
      You'll use this diagram as context when prompting AI tools to implement each stage. -->
 
 ---
-
+   Flowchart
+   A[Document Ingestion(Python file loading)]----> B[Chunking(50-token chunks + 10 - 15 overlap)]
+   B---> C[Embedding + Vector Store (all-MiniLM-L6-v2 + ChromaDB)]
+   C---> D[Retrieval (Top-k = 3-5)]
+   D --> E[Generation (LLM uses retrieved chunks)]
 ## AI Tool Plan
 
 <!-- For each part of the pipeline below, describe:
-     - Which AI tool you plan to use (Claude, Copilot, ChatGPT, etc.)
+     - Which AI tool you plan to use (Claude, Copilot, ChatGPT, etc.)  
+
      - What you'll give it as input (which sections of this planning.md, which requirements)
+
+
      - What you expect it to produce
      - How you'll verify the output matches your spec
 
      "I'll use AI to help me code" is not a plan.
      "I'll give Claude my Chunking Strategy section and ask it to implement chunk_text()
      with my specified chunk size and overlap" is a plan. -->
+
+     AI Plan
+
+     Document
+     I will verify the output by checking that all documents load correctly and match the file paths that I specify.
+
+     Chunking
+     I will verify the output by running the function on a sample review and confirming the chunk sizes and overlap match my specifications.
+
+     Embedding + Vector Store
+     I expect it to produce the code so that it initializes the model, embeds each chunk, and inserts them into the vector store. I will verify by checking that the database contains the correct number of embeddings.
+
+     Retrieval
+     I will verify the output by testing queries from Evaluation Plan and confirming that the retrieved chunks match the expected restaurants or reviews.
+
+     Generation
+     I will verify this by running the 5 evaluation questions and checking whether the answers match the expected results.
 
 **Milestone 3 — Ingestion and chunking:**
 
