@@ -27,7 +27,7 @@ def clean_text(text):
     text = text.replace("&nbsp;", "", ).replace("&amp;", "&")
 
     #Remove repeated whitespace
-    text = re.sub(r"\s+", "", text)
+    text = re.sub(r"\s+", " ", text)
 
     return text.strip()
 
@@ -40,7 +40,7 @@ def chunk_text(text, chunk_size=50, overlap=10):
 
     while start < len(tokens):
         end = start + chunk_size
-        chunk_tokens = tokens[start::end]
+        chunk_tokens = tokens[start:end]
 
         if chunk_tokens:
             chunks.append(" ".join(chunk_tokens))
@@ -65,26 +65,33 @@ if __name__ == "__main__":
             "text": clean_text(doc["text"])
         })
 
+    documents = cleaned_docs
+
 #4. Chunking documents
 
 all_chunks = []
-for doc in cleaned_docs:
-    chunks = chunk_text(doc["text"], chunk_size=50, overlap=10)
-    for i, chunk in enumerate(chunks):
+chunk_id = 1
+
+for doc in documents:
+    text = doc["text"]
+    doc_chunks = chunk_text(text, chunk_size=50, overlap=10)
+
+    for chunk in doc_chunks:
         all_chunks.append({
-            "doc_id": doc["id"],
-            "chunk_id": f"{doc['id']}_{i}",
+            "chunk_id": chunk_id,
             "text": chunk 
         })
+        chunk_id += 1
 
-    print("Total chunks created:", len(all_chunks))
 
     #Print 5 random chunks for inspection
 
-    print("\n-----SAMPLE CHUNKS-----")
-    for c in random.sample(all_chunks, min(5, len(all_chunks))):
-        print("\nChunk:", c["chunk_id"])
-        print(c["text"])
+print("Total chunks created:", len(all_chunks))
+
+print("\n-----SAMPLE CHUNKS-----")
+for c in random.sample(all_chunks, min(5, len(all_chunks))):
+    print("\nChunk:", c["chunk_id"])
+    print(c["text"])
 
 
 
