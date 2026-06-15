@@ -2,8 +2,9 @@ import os
 import re
 import random
 
-# 1. Load Documents
 
+# 1. Load Documents
+ 
 def load_documents(folder_path):
     documents = []
     for filename in os.listdir(folder_path):
@@ -93,6 +94,86 @@ for c in random.sample(all_chunks, min(5, len(all_chunks))):
     print("\nChunk:", c["chunk_id"])
     print(c["text"])
 
+    #Embedding + Chromadb
+
+from sentence_transformers import SentenceTransformer 
+import chromadb 
+from chromadb.config import Settings
+import uuid
+
+print("\nLoading embedding model...")
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+chroma_client = chromadb.Client(Settings(
+    chroma_db_impl="duckdb+paraquet",
+    persist_directory="vectorstore"
+))
+
+collection = chroma_client.get_or_create_collection(
+    name="course_chunks",
+    metadata={"hnsw:space": "cosine"}
+)
+
+#Emded and store chunks
+
+def embed_and_store(chunks):
+    texts = [c["text"] for c in chunks]
+    metadatas =  [c["text"] for c in chunks]
+    ids = [str(uuid.uuid4()) for _ in chunks]
+
+    embeddings = model.encode(texts, show_progress_bar=True)
+
+    collection.add(
+        ids=ids,
+        embeddings=embeddings,
+        documents=texts,
+        metadatas=metadatas
+    )
+
+    print(f"\nStored {len(chunks)} chunks in ChromaDB.")
+
+embed_and_store(all_chunks)
+
+#Retrieval function
+
+def retrieve(query, k=4):
+    query_embedding = model.encode([query])[0]
+
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=k 
+    )
+
+    formatted = []
+    for doc, meta, dist in zip(results["documents"][0],
+                               results["metadatas"][0],
+                               results["distances"][0]):
+
+        formatted.append({
+            "text": doc,
+            "source": meta["source"],
+            "position": meta["position"],
+            "distance": dist
+        })
+
+    return formatted
+
+#Debug print helper
+
+def print_results(results):
+    for r in results:
+        print("\n---Retrieved Chunk---")
+        print(f"Source: {r['source']} | Position: {r['position']}| Distance: {r['distance']:.4f}")
+        print(r["text"])
+        print("---------------")
+
+#Test retrieval
+
+print("\nTesting retrieval...")
+test_query = "What are the best pizza spots in southern California?"
+results = retrieve(test_query, k=5)
+print_results(results)
 
 
 
+ 
